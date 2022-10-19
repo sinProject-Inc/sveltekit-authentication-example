@@ -9,3 +9,32 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Role {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  name       String
+  users      User[]
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  role_id    Int
+  name       String
+  email      String      @unique
+  password   String
+  role       Role        @relation(fields: [role_id], references: [id])
+  auth_token AuthToken[]
+}
+
+model AuthToken {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  token      String
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
+}
