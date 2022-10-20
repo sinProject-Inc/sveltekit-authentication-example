@@ -34,7 +34,7 @@ model AuthToken {
   id         Int      @id @default(autoincrement())
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  token      String
   user_id    Int
+  token      String
   user       User     @relation(fields: [user_id], references: [id])
 }
