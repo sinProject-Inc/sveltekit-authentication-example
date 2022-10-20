@@ -14,7 +14,7 @@ model Role {
   id         Int      @id @default(autoincrement())
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  name       String
+  name       String   @unique
   users      User[]
 }
 
@@ -23,7 +23,7 @@ model User {
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
   role_id    Int
-  name       String
+  username   String      @unique
   email      String      @unique
   password   String
   role       Role        @relation(fields: [role_id], references: [id])

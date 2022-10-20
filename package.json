@@ -16,6 +16,7 @@
 		"@playwright/test": "^1.25.0",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
+		"@types/bcrypt": "^5.0.0",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
 		"eslint": "^8.16.0",
@@ -32,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@prisma/client": "^4.5.0"
+		"@prisma/client": "^4.5.0",
+		"bcrypt": "^5.1.0"
 	}
 }
