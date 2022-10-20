@@ -13,15 +13,15 @@ export const actions: Actions = {
 		const username = data.get('username') as string
 		const password = data.get('password') as string
 
-		if (!username || !password) return invalid(404, { missing: true, username })
+		if (!username || !password) return invalid(404, { missing: true })
 
 		const user = await db.user.findUnique({ where: { username } })
 
-		if (!user) return invalid(400, { credentials: true, username })
+		if (!user) return invalid(400, { credentials: true })
 
 		const password_valid = await bcrypt.compare(password, user.password)
 
-		if (!password_valid) return invalid(400, { credentials: true, username })
+		if (!password_valid) return invalid(400, { credentials: true })
 
 		await db.authToken.deleteMany({ where: { user_id: user.id } })
 
@@ -41,6 +41,6 @@ export const actions: Actions = {
 			httpOnly: true,
 		})
 
-		throw redirect(302, '/')
+		throw redirect(303, '/')
 	},
 }

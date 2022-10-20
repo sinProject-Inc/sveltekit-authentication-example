@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import { onMount } from 'svelte'
 	import type { ActionData } from './$types'
 
@@ -17,16 +18,15 @@
 
 <h1>Register</h1>
 
-<form method="POST">
+<form method="POST" use:enhance>
 	<input
 		type="text"
 		name="username"
 		placeholder="Username"
 		required
-		value={form?.username ?? ''}
 		bind:this={username_element}
 	/>
-	<input type="email" name="email" placeholder="email" required value={form?.email ?? ''} />
+	<input type="email" name="email" placeholder="email" required />
 	<input type="password" name="password" placeholder="Password" required />
 
 	{#if form?.missing}<p class="error">Username, email and password is required.</p>{/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import { onMount } from 'svelte'
 	import type { ActionData } from './$types'
 
@@ -17,13 +18,12 @@
 
 <h1>Log in</h1>
 
-<form method="POST">
+<form method="POST" use:enhance>
 	<input
 		type="text"
 		name="username"
 		placeholder="Username"
 		required
-		value={form?.username ?? ''}
 		bind:this={username_element}
 	/>
 	<input type="password" name="password" placeholder="Password" required />

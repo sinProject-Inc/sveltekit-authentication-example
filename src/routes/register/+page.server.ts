@@ -19,7 +19,7 @@ export const actions: Actions = {
 		const email = data.get('email') as string
 		const password = data.get('password') as string
 
-		if (!username || !email || !password) return invalid(404, { missing: true, username, email })
+		if (!username || !email || !password) return invalid(404, { missing: true })
 
 		try {
 			await db.user.create({
@@ -32,7 +32,7 @@ export const actions: Actions = {
 			})
 		} catch (error) {
 			console.error(error)
-			return invalid(400, { user_exists: true, username, email })
+			return invalid(400, { user_exists: true })
 		}
 
 		console.log('aaa')
