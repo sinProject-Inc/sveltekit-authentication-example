@@ -1,13 +1,31 @@
 <script lang="ts">
-  import type { ActionData } from './$types';
+	import { onMount } from 'svelte'
+	import type { ActionData } from './$types'
 
-  export let form: ActionData;
+	export let form: ActionData
+
+	let username_element: HTMLInputElement
+
+	onMount(() => {
+		document.onfocus = (event) => {
+			if (event.target instanceof HTMLInputElement) event.target.select()
+		}
+
+		username_element.select()
+	})
 </script>
 
 <h1>Register</h1>
 
 <form method="POST">
-	<input type="text" name="username" placeholder="Username" required value={form?.username ?? ''} />
+	<input
+		type="text"
+		name="username"
+		placeholder="Username"
+		required
+		value={form?.username ?? ''}
+		bind:this={username_element}
+	/>
 	<input type="email" name="email" placeholder="email" required value={form?.email ?? ''} />
 	<input type="password" name="password" placeholder="Password" required />
 
