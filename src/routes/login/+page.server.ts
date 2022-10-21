@@ -4,8 +4,11 @@ import type { Actions, PageServerLoad } from '.svelte-kit/types/src/routes/regis
 import { invalid, redirect } from '@sveltejs/kit'
 import bcrypt from 'bcrypt'
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (locals.user) throw redirect(302, '/')
+export const load: PageServerLoad = async ({ locals, url }) => {
+	if (locals.user) {
+		const redirect_url = url.searchParams.get('redirect') || '/'
+		throw redirect(302, redirect_url)
+	}
 }
 
 export const actions: Actions = {
@@ -27,7 +30,7 @@ export const actions: Actions = {
 		const auth_token = await db.authToken.upsert({
 			where: { user_id: user.id },
 			update: { token: crypto.randomUUID() },
-			create: { user_id: user.id, token: crypto.randomUUID() }
+			create: { user_id: user.id, token: crypto.randomUUID() },
 		})
 
 		cookies.set('session_id', auth_token.token, {
