@@ -1,14 +1,16 @@
+<!-- 
 <script lang="ts">
 	import { page } from '$app/stores'
 </script>
+ -->
 
 <svelte:head>
 	<title> SvelteKit Authentication</title>
 </svelte:head>
 
-<nav>
+<!-- <nav>
 	{#if $page.data.user}
-	  <!-- <a href="/admin">Admin</a> -->
+	  <a href="/main">Main</a>
 
 		<form action="/logout" method="POST">
 			<button type="submit">Log out</button>
@@ -17,7 +19,7 @@
 		<a href="/login">Log in</a>
 		<a href="/register">Register</a>
 	{/if}
-</nav>
+</nav> -->
 
 <main>
 	<slot />

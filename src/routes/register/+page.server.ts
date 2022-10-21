@@ -35,8 +35,6 @@ export const actions: Actions = {
 			return invalid(400, { user_exists: true })
 		}
 
-		console.log('aaa')
-
 		throw redirect(303, '/login')
 	},
 }
