@@ -23,13 +23,10 @@ export const actions: Actions = {
 
 		if (!password_valid) return invalid(400, { credentials: true })
 
-		await db.authToken.deleteMany({ where: { user_id: user.id } })
-
-		const auth_token = await db.authToken.create({
-			data: {
-				user_id: user.id,
-				token: crypto.randomUUID(),
-			},
+		const auth_token = await db.authToken.upsert({
+			where: { user_id: user.id },
+			update: { token: crypto.randomUUID() },
+			create: { user_id: user.id, token: crypto.randomUUID() }
 		})
 
 		cookies.set('session_id', auth_token.token, {
