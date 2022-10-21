@@ -8,8 +8,8 @@ enum Roles {
 	user = 'user',
 }
 
-export const load: PageServerLoad = async () => {
-	// todo
+export const load: PageServerLoad = async ({ locals }) => {
+	if (locals.user) throw redirect(302, '/')
 }
 
 export const actions: Actions = {
@@ -40,4 +40,3 @@ export const actions: Actions = {
 		throw redirect(303, '/login')
 	},
 }
-

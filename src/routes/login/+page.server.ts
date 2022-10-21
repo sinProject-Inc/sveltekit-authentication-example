@@ -1,10 +1,11 @@
+import { goto } from '$app/navigation'
 import { db } from '$lib/database'
 import type { Actions, PageServerLoad } from '.svelte-kit/types/src/routes/register/$types'
 import { invalid, redirect } from '@sveltejs/kit'
 import bcrypt from 'bcrypt'
 
-export const load: PageServerLoad = async () => {
-	// todo
+export const load: PageServerLoad = async ({ locals }) => {
+	if (locals.user) throw redirect(302, '/')
 }
 
 export const actions: Actions = {
@@ -37,7 +38,5 @@ export const actions: Actions = {
 			// secure: process.env.NODE_ENV === 'production',
 			httpOnly: true,
 		})
-
-		throw redirect(303, '/')
 	},
 }
