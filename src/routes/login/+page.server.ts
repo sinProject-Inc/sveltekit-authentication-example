@@ -34,5 +34,7 @@ export const actions: Actions = {
 		})
 
 		new CookiesManager(cookies).setSessionId(auth_token.token);
+
+		return { success: true }
 	},
 }
