@@ -1,6 +1,7 @@
 {
 	"cSpell.words": [
 		"instanceof",
+		"minlength",
 		"onfocus",
 		"sveltejs",
 		"sveltekit"

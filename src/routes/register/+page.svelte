@@ -27,7 +27,7 @@
 		bind:this={username_element}
 	/>
 	<input type="email" name="email" placeholder="email" required />
-	<input type="password" name="password" placeholder="Password" required />
+	<input type="password" name="password" placeholder="Password" required minlength="8" />
 
 	{#if form?.missing}<p class="error">Username, email and password is required.</p>{/if}
 	{#if form?.user_exists}<p class="error">Username or email is used.</p>{/if}

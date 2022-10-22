@@ -15,11 +15,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	default: async ({ request }) => {
 		const data = await request.formData()
-		const username = data.get('username') as string
-		const email = data.get('email') as string
-		const password = data.get('password') as string
+		const username = data.get('username')?.toString() ?? ''
+		const email = data.get('email')?.toString() ?? ''
+		const password = data.get('password')?.toString() ?? ''
+		const password_is_valid = password.length >= 8
 
-		if (!username || !email || !password) return invalid(404, { missing: true })
+		if (!username || !email || !password_is_valid) return invalid(404, { missing: true })
 
 		try {
 			await db.user.create({
