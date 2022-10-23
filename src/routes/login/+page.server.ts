@@ -1,13 +1,28 @@
 import { CookiesManager } from '$lib/cookies_manager'
 import { db } from '$lib/database'
+import { NodemailerManager } from '$lib/nodemailer_manager'
 import type { Actions, PageServerLoad } from '.svelte-kit/types/src/routes/register/$types'
 import { invalid, redirect } from '@sveltejs/kit'
 import bcrypt from 'bcrypt'
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	if (locals.user) {
-		const redirect_url = url.searchParams.get('redirect') || '/'
+		const redirect_url = url.searchParams.get('redirect') || ' /'
 		throw redirect(302, redirect_url)
+	}
+}
+
+async function sendMail(username: string) {
+	const nodemailerManager = new NodemailerManager()
+
+	try {
+		await nodemailerManager.sendMail(
+			'info@sinproject.net',
+			'SvelteKit Authentication',
+			`${username} logged in `
+		)
+	} catch (error) {
+		console.error(error)
 	}
 }
 
@@ -27,13 +42,15 @@ export const actions: Actions = {
 
 		if (!password_valid) return invalid(400, { credentials: true })
 
+		sendMail(username)
+
 		const auth_token = await db.authToken.upsert({
 			where: { user_id: user.id },
 			update: { token: crypto.randomUUID() },
 			create: { user_id: user.id, token: crypto.randomUUID() },
 		})
 
-		new CookiesManager(cookies).setSessionId(auth_token.token);
+		new CookiesManager(cookies).setSessionId(auth_token.token)
 
 		return { success: true }
 	},
