@@ -19,6 +19,5 @@
 		<button type="submit">Log out</button>
 	</form>
 {:else}
-	<a href="/login">Log in</a>
-	<a href="/register">Register</a>
+	<a href="/login">Log in / Register</a>
 {/if}

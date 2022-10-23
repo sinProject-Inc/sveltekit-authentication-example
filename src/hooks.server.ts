@@ -23,7 +23,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (!auth_token) return await resolve(event)
 
 	event.locals.user = {
-		username: auth_token.user.username,
+		email: auth_token.user.email,
 		role: auth_token.user.role.name,
 	}
 

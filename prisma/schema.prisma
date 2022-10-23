@@ -23,10 +23,9 @@ model User {
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
   role_id    Int
-  username   String      @unique
   email      String      @unique
-  password   String
   role       Role        @relation(fields: [role_id], references: [id])
+  auth_pin   AuthPin[]
   auth_token AuthToken[]
 }
 
@@ -36,5 +35,14 @@ model AuthToken {
   updated_at DateTime @updatedAt
   user_id    Int      @unique
   token      String   @unique
+  user       User     @relation(fields: [user_id], references: [id])
+}
+
+model AuthPin {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user_id    Int      @unique
+  pin_code   String   @unique
   user       User     @relation(fields: [user_id], references: [id])
 }

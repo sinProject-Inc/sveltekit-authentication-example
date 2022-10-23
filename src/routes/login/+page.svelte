@@ -1,35 +1,25 @@
 <script lang="ts">
-	import { enhance } from '$app/forms'
+	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
-	import type { ActionData } from './$types'
+	
+	let first_element: HTMLInputElement
 
-	export let form: ActionData
-
-	let username_element: HTMLInputElement
+	const redirect_url = $page.url.searchParams.get('redirect_url') ?? ''
+	const encoded_redirect_url = encodeURIComponent(redirect_url)
 
 	onMount(() => {
 		document.onfocus = (event) => {
 			if (event.target instanceof HTMLInputElement) event.target.select()
 		}
 
-		username_element.select()
+		first_element.select()
 	})
 </script>
 
-<h1>Log in</h1>
+<h1>Log in / Register</h1>
 
-<form method="POST" use:enhance>
-	<input
-		type="text"
-		name="username"
-		placeholder="Username"
-		required
-		bind:this={username_element}
-	/>
-	<input type="password" name="password" placeholder="Password" required />
-
-	{#if form?.missing}<p class="error">Username and password is required.</p>{/if}
-	{#if form?.credentials}<p class="error">You have entered the wrong credentials.</p>{/if}
+<form method="POST" action="/pin_code?/login&redirect_url={encoded_redirect_url}">
+	<input type="email" name="email" placeholder="Email" required bind:this={first_element} />
 
 	<button type="submit">Log in</button>
 </form>
