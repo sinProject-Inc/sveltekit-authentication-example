@@ -1,9 +1,9 @@
 import type { Cookies } from "@sveltejs/kit";
 
 export class CookiesManager {
-	constructor(private readonly _cookies: Cookies) {}
+	public constructor(private readonly _cookies: Cookies) {}
 
-	setSessionId(session_id: string) {
+	public setSessionId(session_id: string): void {
 		this._cookies.set('session_id', session_id, {
 			path: '/',
 			maxAge: 60 * 60 * 24 * 30,

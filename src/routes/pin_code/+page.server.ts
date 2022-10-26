@@ -3,7 +3,7 @@ import { db } from '$lib/database'
 import { NodemailerManager as NodeMailerManager } from '$lib/nodemailer_manager'
 import type { PageServerLoad } from '.svelte-kit/types/src/routes/$types'
 import type { User } from '@prisma/client'
-import { invalid, redirect, type Actions } from '@sveltejs/kit'
+import { invalid, redirect, type Action, type Actions } from '@sveltejs/kit'
 
 enum Roles {
 	admin = 'admin',
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals, url, request }) => {
 	if (request.method != 'POST') redirect(302, '/')
 }
 
-function createPinCode(length = 6) {
+function createPinCode(length = 6): string {
 	const pin_code_chars = '0123456789'
 
 	let pin_code = ''
@@ -31,7 +31,7 @@ function createPinCode(length = 6) {
 	return pin_code
 }
 
-async function sendMail(user: User, pin_code: string) {
+async function sendMail(user: User, pin_code: string): Promise<void> {
 	const nodeMailerManager = new NodeMailerManager()
 
 	try {
@@ -45,11 +45,11 @@ async function sendMail(user: User, pin_code: string) {
 	}
 }
 
-async function findUser(email: string, canRegister = true) {
+async function findUser(email: string, can_register = true): Promise<User | undefined> {
 	const user = await db.user.findUnique({ where: { email } })
 
 	if (user) return user;
-	if (!canRegister) return undefined;
+	if (!can_register) return undefined;
 
 	try {
 		return await db.user.create({
@@ -64,13 +64,13 @@ async function findUser(email: string, canRegister = true) {
 	}
 }
 
-async function login(request: Request, canRegister = true) {
+async function login(request: Request, can_register = true): Promise<Action> {
 	const data = await request.formData()
 	const email = data.get('email')?.toString() ?? ''
 
 	if (!email) throw redirect(302, '/')
 
-	const user = await findUser(email, canRegister)
+	const user = await findUser(email, can_register)
 
 	if (!user) return { success: true, email, missing: false, credentials: false }
 
@@ -80,7 +80,7 @@ async function login(request: Request, canRegister = true) {
 
 	const user_id = user.id
 
-	await db.authPin.upsert({
+	const a = await db.authPin.upsert({
 		where: { user_id },
 		update: { pin_code },
 		create: { user_id, pin_code },
