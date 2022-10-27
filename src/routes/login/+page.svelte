@@ -3,6 +3,8 @@
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
 
+	// const client = new Client("MY-BEARER-TOKEN");
+
 	let first_element: HTMLInputElement
 
 	const redirect_url = $page.url.searchParams.get('redirect_url') ?? ''
@@ -34,6 +36,14 @@
 	// function handleCredentialResponse(response: any): void {
 	// 	post({ credential: response.credential })
 	// }
+
+	function signinTwitter(): void {
+		const form_element = document.getElementById('signin_twitter')
+
+		if (form_element instanceof HTMLFormElement) {
+			form_element.submit()
+		}
+	}
 
 	onMount(() => {
 		document.onfocus = (event): void => {
@@ -69,21 +79,64 @@
 	data-auto_prompt="true"
 	data-auto_select="true"
 />
-<div
-	class="g_id_signin"
-	data-width="240"
-	data-type="standard"
-	data-size="large"
-	data-theme="outline"
-	data-text="sign_in_with"
-	data-shape="rectangular"
-	data-logo_alignment="left"
-/>
 
-<!-- <div id="buttonDiv" style="max-width:400" /> -->
-<br />
-<form method="POST" action="/pin_code?/login&redirect_url={encoded_redirect_url}">
-	<input type="email" name="email" placeholder="Email" required bind:this={first_element} />
+<div class="flex_column">
+	<div
+		class="g_id_signin"
+		data-width="240"
+		data-type="standard"
+		data-size="large"
+		data-theme="outline"
+		data-text="sign_in_with"
+		data-shape="rectangular"
+		data-logo_alignment="left"
+	/>
 
-	<button type="submit">Log in</button>
-</form>
+	<form method="POST" action="/signin_twitter" id="signin_twitter">
+		<div class="signin_twitter" on:click={signinTwitter} on:keypress={signinTwitter}>
+			<div class="flex_row_twitter roboto">
+				<img src="./twitter_social_icon_circle_blue.svg" alt="" width="20px" />
+				<div>Twitter でログイン</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- <div id="buttonDiv" style="max-width:400" /> -->
+	<form method="POST" action="/pin_code?/login&redirect_url={encoded_redirect_url}">
+		<input type="email" name="email" placeholder="Email" required bind:this={first_element} />
+
+		<button type="submit">Log in</button>
+	</form>
+</div>
+
+<style>
+	.flex_column {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.signin_twitter {
+		width: 238px;
+		height: 40px;
+		border: 1px solid #dadce0;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+
+	.flex_row_twitter {
+		height: 40px;
+		display: flex;
+		flex-direction: row;
+		gap: 8px;
+		align-items: center;
+		padding: 0 8px;
+	}
+
+	.roboto {
+		color: #3c4043;
+		font-family: sans-serif;
+		font-weight: 80;
+		font-size: 12px;
+	}
+</style>

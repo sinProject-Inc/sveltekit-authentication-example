@@ -1,14 +1,9 @@
 import { CookiesManager } from '$lib/cookies_manager'
-import { db } from '$lib/database'
+import { db, findUser } from '$lib/database'
 import { NodemailerManager as NodeMailerManager } from '$lib/nodemailer_manager'
 import type { PageServerLoad } from '.svelte-kit/types/src/routes/$types'
 import type { User } from '@prisma/client'
 import { invalid, redirect, type Actions } from '@sveltejs/kit'
-
-enum Roles {
-	admin = 'admin',
-	user = 'user',
-}
 
 export const load: PageServerLoad = async ({ locals, url, request }) => {
 	if (locals.user) {
@@ -42,25 +37,6 @@ async function sendMail(user: User, pin_code: string): Promise<void> {
 		)
 	} catch (error) {
 		console.error(error)
-	}
-}
-
-async function findUser(email: string, can_register = true): Promise<User | undefined> {
-	const user = await db.user.findUnique({ where: { email } })
-
-	if (user) return user
-	if (!can_register) return undefined
-
-	try {
-		return await db.user.create({
-			data: {
-				role: { connect: { name: Roles.user } },
-				email,
-			},
-		})
-	} catch (error) {
-		console.error(error)
-		return undefined
 	}
 }
 
@@ -185,6 +161,6 @@ export const actions: Actions = {
 
 		new CookiesManager(cookies).setSessionId(auth_token.token)
 
-		redirect(302, '/login')
+		throw redirect(302, '/login')
 	},
 }

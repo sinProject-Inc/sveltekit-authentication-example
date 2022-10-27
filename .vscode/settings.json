@@ -2,8 +2,10 @@
 	"cSpell.words": [
 		"builtins",
 		"instanceof",
+		"keypress",
 		"minlength",
 		"onfocus",
+		"roboto",
 		"signin",
 		"sveltejs",
 		"sveltekit"
