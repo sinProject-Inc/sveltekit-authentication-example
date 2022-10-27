@@ -1,8 +1,10 @@
 {
 	"cSpell.words": [
+		"builtins",
 		"instanceof",
 		"minlength",
 		"onfocus",
+		"signin",
 		"sveltejs",
 		"sveltekit"
 	]

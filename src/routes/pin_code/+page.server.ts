@@ -3,7 +3,7 @@ import { db } from '$lib/database'
 import { NodemailerManager as NodeMailerManager } from '$lib/nodemailer_manager'
 import type { PageServerLoad } from '.svelte-kit/types/src/routes/$types'
 import type { User } from '@prisma/client'
-import { invalid, redirect, type Action, type Actions } from '@sveltejs/kit'
+import { invalid, redirect, type Actions } from '@sveltejs/kit'
 
 enum Roles {
 	admin = 'admin',
@@ -48,8 +48,8 @@ async function sendMail(user: User, pin_code: string): Promise<void> {
 async function findUser(email: string, can_register = true): Promise<User | undefined> {
 	const user = await db.user.findUnique({ where: { email } })
 
-	if (user) return user;
-	if (!can_register) return undefined;
+	if (user) return user
+	if (!can_register) return undefined
 
 	try {
 		return await db.user.create({
@@ -64,34 +64,52 @@ async function findUser(email: string, can_register = true): Promise<User | unde
 	}
 }
 
-async function login(request: Request, can_register = true): Promise<Action> {
-	const data = await request.formData()
-	const email = data.get('email')?.toString() ?? ''
+type GoogleCredential = {
+	sub: string
+	name: string
+	given_name: string
+	family_name: string
+	picture: string
+	email: string
+}
 
-	if (!email) throw redirect(302, '/')
-
-	const user = await findUser(email, can_register)
-
-	if (!user) return { success: true, email, missing: false, credentials: false }
-
-	const pin_code = createPinCode()
-	console.log('sendmail')
-	sendMail(user, pin_code)
-
-	const user_id = user.id
-
-	const a = await db.authPin.upsert({
-		where: { user_id },
-		update: { pin_code },
-		create: { user_id, pin_code },
-	})
-
-	return { success: true, email, missing: false, credentials: false }
+function decodeJwtResponse(credential: string): GoogleCredential {
+	const base64Url = credential.split('.')[1]
+	const base64 = base64Url?.replace(/-/g, '+').replace(/_/g, '/') ?? ''
+	const jsonPayload = decodeURIComponent(
+		atob(base64)
+			.split('')
+			.map(function (c) {
+				return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+			})
+			.join('')
+	)
+	return JSON.parse(jsonPayload) as GoogleCredential
 }
 
 export const actions: Actions = {
 	login: async ({ request }) => {
-		return await login(request)
+		const data = await request.formData()
+		const email = data.get('email')?.toString() ?? ''
+
+		if (!email) throw redirect(302, '/')
+
+		const user = await findUser(email, true)
+
+		if (!user) return { credentials: true, email, missing: false, success: false }
+
+		const pin_code = createPinCode()
+		sendMail(user, pin_code)
+
+		const user_id = user.id
+
+		await db.authPin.upsert({
+			where: { user_id },
+			update: { pin_code },
+			create: { user_id, pin_code },
+		})
+
+		return { success: true, email, missing: false, credentials: false }
 	},
 	submit: async ({ cookies, request }) => {
 		const data = await request.formData()
@@ -134,5 +152,39 @@ export const actions: Actions = {
 		new CookiesManager(cookies).setSessionId(auth_token.token)
 
 		return { success: true, email }
+	},
+	google: async ({ cookies, request }) => {
+		const data = await request.formData()
+		const credential = data.get('credential')?.toString() ?? ''
+
+		console.log('Encoded JWT ID token: ' + credential)
+
+		if (!credential) return invalid(400, { message: 'Invalid credential' })
+
+		const payload = decodeJwtResponse(credential)
+
+		console.log('ID ' + payload.sub)
+		console.log('Full Name: ' + payload.name)
+		console.log('Given Name: ' + payload.given_name)
+		console.log('Family Name: ' + payload.family_name)
+		console.log('Image URL: ' + payload.picture)
+		console.log('Email: ' + payload.email)
+
+		const email = payload.email as string
+		const user = await findUser(email, true)
+
+		if (!user) return { credentials: true, email, missing: false }
+
+		const user_id = user.id
+
+		const auth_token = await db.authToken.upsert({
+			where: { user_id },
+			update: { token: crypto.randomUUID() },
+			create: { user_id, token: crypto.randomUUID() },
+		})
+
+		new CookiesManager(cookies).setSessionId(auth_token.token)
+
+		redirect(302, '/login')
 	},
 }
