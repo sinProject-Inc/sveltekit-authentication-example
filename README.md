@@ -12,7 +12,7 @@ You can sign in with only your email address and PIN code. To confirm your email
 You can also sign in with Google and sign in with Twitter.
 
 1. Local accounts via email
-2.  Sign in with Google
+2. Sign in with Google
 3. Sign in with Twitter
 
 ## Prerequisites
@@ -88,7 +88,7 @@ visit http://localhost:5173/initialize_database
 
 1. Visit sign in page
 2. Enter your email address
-3. Check your email for PIN code
+3. Check your PIN code in your emails
 4. Enter PIN code
 
 ## My ask of you
