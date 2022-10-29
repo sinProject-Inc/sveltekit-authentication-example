@@ -1,6 +1,6 @@
 # SvelteKit Authentication Example
 
-This is an example of how tow to sign up, sing in, authenticate, send PIN code mai, sign in with Google and sign in with Twitter.
+This is an example of how to sign up, sign in, authenticate, send PIN code by email, sign in with Google and sign in with Twitter.
 
 ## Sign up
 
