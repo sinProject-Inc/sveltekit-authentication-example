@@ -1,5 +1,5 @@
-import { CookiesManager } from '$lib/cookies_manager'
-import { db, findUser } from '$lib/database'
+import { Auth } from '$lib/auth'
+import { Database } from '$lib/database'
 import { redirect, type RequestHandler } from '@sveltejs/kit'
 import Client, { auth } from 'twitter-api-sdk'
 // import { TwitterApi } from 'twitter-api-v2'
@@ -53,19 +53,11 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 
 		// console.log(email)
 
-		const user = await findUser(user_key, true)
+		const user = await Database.findUser(user_key, true)
 
 		if (!user) return new Response('No user', { status: 500 })
 
-		const user_id = user.id
-
-		const auth_token = await db.authToken.upsert({
-			where: { user_id },
-			update: { token: crypto.randomUUID() },
-			create: { user_id, token: crypto.randomUUID() },
-		})
-
-		new CookiesManager(cookies).setSessionId(auth_token.token)
+		await Auth.signIn(user.id, cookies)
 
 		throw redirect(302, '/')
 

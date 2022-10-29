@@ -10,6 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AppSetting {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  key        String   @unique
+  value      String
+}
+
 model Role {
   id         Int      @id @default(autoincrement())
   created_at DateTime @default(now())
@@ -33,9 +41,11 @@ model AuthToken {
   id         Int      @id @default(autoincrement())
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  user_id    Int      @unique
+  user_id    Int
   token      String   @unique
   user       User     @relation(fields: [user_id], references: [id])
+
+  @@index(updated_at)
 }
 
 model AuthPin {

@@ -1,5 +1,5 @@
-import { CookiesManager } from '$lib/cookies_manager'
-import { db, findUser } from '$lib/database'
+import { Auth } from '$lib/auth'
+import { Database, db } from '$lib/database'
 import { NodemailerManager as NodeMailerManager } from '$lib/nodemailer_manager'
 import type { PageServerLoad } from '.svelte-kit/types/src/routes/$types'
 import type { User } from '@prisma/client'
@@ -70,7 +70,7 @@ export const actions: Actions = {
 
 		if (!email) throw redirect(302, '/')
 
-		const user = await findUser(email, true)
+		const user = await Database.findUser(email, true)
 
 		if (!user) return { credentials: true, email, missing: false, success: false }
 
@@ -94,38 +94,11 @@ export const actions: Actions = {
 
 		if (!email || !pin_code) return invalid(400, { missing: true, email })
 
-		const limit_date = new Date()
-
-		limit_date.setMinutes(limit_date.getMinutes() - 5)
-
-		const auth_pin = await db.authPin.findFirst({
-			where: {
-				pin_code,
-				updated_at: { gt: limit_date },
-				user: {
-					email,
-				},
-			},
-		})
+		const auth_pin = await Auth.findAuthPin(email, pin_code)
 
 		if (!auth_pin) return invalid(400, { credentials: true, email })
 
-		const user_id = auth_pin.user_id
-
-		const [auth_token] = await db.$transaction([
-			db.authToken.upsert({
-				where: { user_id },
-				update: { token: crypto.randomUUID() },
-				create: { user_id, token: crypto.randomUUID() },
-			}),
-			db.authPin.delete({
-				where: {
-					id: auth_pin.id,
-				},
-			}),
-		])
-
-		new CookiesManager(cookies).setSessionId(auth_token.token)
+		await Auth.signIn(auth_pin.user_id, cookies, auth_pin.id)
 
 		return { success: true, email }
 	},
@@ -147,19 +120,11 @@ export const actions: Actions = {
 		console.log('Email: ' + payload.email)
 
 		const email = payload.email as string
-		const user = await findUser(email, true)
+		const user = await Database.findUser(email, true)
 
 		if (!user) return { credentials: true, email, missing: false }
 
-		const user_id = user.id
-
-		const auth_token = await db.authToken.upsert({
-			where: { user_id },
-			update: { token: crypto.randomUUID() },
-			create: { user_id, token: crypto.randomUUID() },
-		})
-
-		new CookiesManager(cookies).setSessionId(auth_token.token)
+		await Auth.signIn(user.id, cookies)
 
 		throw redirect(302, '/login')
 	},
