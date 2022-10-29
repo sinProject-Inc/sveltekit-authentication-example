@@ -30,7 +30,7 @@ You can also sign in with Google and sign in with Twitter.
 
 - [Twitter developer account and setup](https://developer.twitter.com/en/docs/apps/overview)
 
-## Setting up the Gmail for sending PIN code emails
+## Setting up the Gmail for sending PIN code by email
 
 1. Visit [Google Account - Security](https://myaccount.google.com/security)
 1. Turn on 2-Step Verification
@@ -78,15 +78,15 @@ npx prisma db push
 npm run dev -- --open
 ```
 
-## Set initial data only for the first time
+## Insert initial data only for the first time
 
-Write Roles and Lifetime settings:
+Insert roles and lifetimes settings:
 
 visit http://localhost:5173/initialize_database
 
 ## How to sign in
 
-1. visit sign in page
+1. Visit sign in page
 2. Enter your email address
 3. Check your email for PIN code
 4. Enter PIN code
