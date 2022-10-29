@@ -10,18 +10,18 @@
 	{#if $page.data.user}
 	  <a href="/main">Main</a>
 
-		<form action="/logout" method="POST">
-			<button type="submit">Log out</button>
+		<form action="/sign_out" method="POST">
+			<button type="submit">Sign out</button>
 		</form>
 	{:else}
-		<a href="/login">Log in</a>
+		<a href="/sign_in">Sign in</a>
 		<a href="/register">Register</a>
 	{/if}
 </nav> -->
 
 
 
-{#if $page.url.pathname != '/login' && !$page.data.user}
+{#if $page.url.pathname != '/sign_in' && !$page.data.user}
 	<script src="https://accounts.google.com/gsi/client" async defer></script>
 	<div
 		id="g_id_onload"

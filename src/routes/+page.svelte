@@ -15,9 +15,9 @@
 {#if $page.data.user}
 	<a href="/main">Main</a>
 
-	<form action="/logout" method="POST">
+	<form action="/sign_out" method="POST">
 		<button type="submit">Log out</button>
 	</form>
 {:else}
-	<a href="/login">Log in / Register</a>
+	<a href="/sign_in">Sign in / Sign up</a>
 {/if}

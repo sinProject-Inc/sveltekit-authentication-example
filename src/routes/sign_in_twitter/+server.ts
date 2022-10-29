@@ -7,7 +7,7 @@ import Client, { auth } from 'twitter-api-sdk'
 const authClient = new auth.OAuth2User({
 	client_id: process.env.TWITTER_CLIENT_ID as string,
 	client_secret: process.env.TWITTER_CLIENT_SECRET as string,
-	callback: 'http://localhost:5173/signin_twitter',
+	callback: 'http://localhost:5173/sign_in_twitter',
 	scopes: ['tweet.read', 'users.read', 'tweet.write'],
 })
 
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 		throw redirect(302, '/')
 
 	} catch (error) {
-		throw redirect(302, '/login')
+		throw redirect(302, '/sign_in')
 	}
 
 	// return new Response('Success')

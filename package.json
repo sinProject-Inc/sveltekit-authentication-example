@@ -1,5 +1,5 @@
 {
-	"name": "sveltekit-login",
+	"name": "sveltekit_authentication",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {

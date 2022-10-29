@@ -37,8 +37,8 @@
 	// 	post({ credential: response.credential })
 	// }
 
-	function signinTwitter(): void {
-		const form_element = document.getElementById('signin_twitter')
+	function signInTwitter(): void {
+		const form_element = document.getElementById('sign_in_twitter')
 
 		if (form_element instanceof HTMLFormElement) {
 			form_element.submit()
@@ -67,7 +67,7 @@
 	})
 </script>
 
-<h1>Log in / Register</h1>
+<h1>Sign in / Sign up</h1>
 {#if browser}
 	<script src="https://accounts.google.com/gsi/client" async defer></script>
 {/if}
@@ -92,8 +92,8 @@
 		data-logo_alignment="left"
 	/>
 
-	<form method="POST" action="/signin_twitter" id="signin_twitter">
-		<div class="signin_twitter" on:click={signinTwitter} on:keypress={signinTwitter}>
+	<form method="POST" action="/sign_in_twitter" id="sign_in_twitter">
+		<div class="sign_in_twitter" on:click={signInTwitter} on:keypress={signInTwitter}>
 			<div class="flex_row_twitter roboto">
 				<img src="./twitter_social_icon_circle_blue.svg" alt="" width="20px" />
 				<div>Twitter でログイン</div>
@@ -102,10 +102,10 @@
 	</form>
 
 	<!-- <div id="buttonDiv" style="max-width:400" /> -->
-	<form method="POST" action="/pin_code?/login&redirect_url={encoded_redirect_url}">
+	<form method="POST" action="/pin_code?/sign_in&redirect_url={encoded_redirect_url}">
 		<input type="email" name="email" placeholder="Email" required bind:this={first_element} />
 
-		<button type="submit">Log in</button>
+		<button type="submit">Sign in / Sign up</button>
 	</form>
 </div>
 
@@ -116,7 +116,7 @@
 		gap: 12px;
 	}
 
-	.signin_twitter {
+	.sign_in_twitter {
 		width: 238px;
 		height: 40px;
 		border: 1px solid #dadce0;

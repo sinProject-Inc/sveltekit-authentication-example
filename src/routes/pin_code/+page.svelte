@@ -9,7 +9,7 @@
 
 
 	onMount(() => {
-	if (!form) location.href = '/login'
+	if (!form) location.href = '/sign_in'
 	
 		document.onfocus = (event) => {
 			if (event.target instanceof HTMLInputElement) event.target.select()

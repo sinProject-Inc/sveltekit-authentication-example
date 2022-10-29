@@ -64,7 +64,7 @@ function decodeJwtResponse(credential: string): GoogleCredential {
 }
 
 export const actions: Actions = {
-	login: async ({ request }) => {
+	sign_in: async ({ request }) => {
 		const data = await request.formData()
 		const email = data.get('email')?.toString() ?? ''
 
@@ -126,6 +126,6 @@ export const actions: Actions = {
 
 		await Auth.signIn(user.id, cookies)
 
-		throw redirect(302, '/login')
+		throw redirect(302, '/sign_in')
 	},
 }
