@@ -44,10 +44,10 @@ Here are the steps:
 
 ```bash
 # Clone the repo to your current directory
-git clone https://github.com/sinProject-Inc/sveltekit_authentication_example.git
+git clone https://github.com/sinProject-Inc/sveltekit-authentication-example.git
 
 # Install the dependencies
-cd /sveltekit_authentication_example
+cd /sveltekit-authentication-example
 npm install
 ```
 
