@@ -12,7 +12,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const auth_token = await Auth.findAuthToken(session_id)
 	if (!auth_token) return await resolve(event)
 
-	await Auth.accessValid(auth_token.id, event.cookies)
+	await Auth.accessValid(auth_token.id)
 
 	event.locals.user = {
 		email: auth_token.user.email,

@@ -75,7 +75,7 @@ export class Auth {
 
 		const auth_token = await Auth.createAuthToken(user_id, session_lifetime_sec)
 
-		new CookiesManager(cookies).setSessionId(auth_token.token, session_lifetime_sec)
+		new CookiesManager(cookies).setSessionId(auth_token.token)
 
 		if (pin_code_id) {
 			await db.authPin.delete({ where: { id: pin_code_id } })
@@ -89,11 +89,13 @@ export class Auth {
 		cookiesManager.deleteSessionId()
 	}
 
-	public static async accessValid(auth_token_id: number, cookies: Cookies): Promise<void> {
+	public static async accessValid(auth_token_id: number, cookies?: Cookies): Promise<void> {
 		const auth_token = await Auth.updateAuthToken(auth_token_id)
 		const session_lifetime_sec = await Auth.getSessionLifetimeSec()
 
-		new CookiesManager(cookies).setSessionId(auth_token.token, session_lifetime_sec)
+		if (cookies) {
+			new CookiesManager(cookies).setSessionId(auth_token.token, session_lifetime_sec)
+		}
 	}
 
 	public static async findAuthToken(session_id: string): Promise<
