@@ -8,7 +8,7 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
 	default: async ({ cookies }) => {
-		Auth.signOut(cookies)
+		await Auth.signOut(cookies)
 		throw redirect(302, '/')
 	},
 }
